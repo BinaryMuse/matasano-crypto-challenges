@@ -46,6 +46,10 @@ defmodule Matasano.Bytes do
       iex> Matasano.Bytes.split_into [1,2,3,4,5,6,7,8,9,10], 3
       [[1,2,3], [4,5,6], [7,8,9], [10]]
   """
+  def split_into(binary, size) when is_binary(binary) do
+    binary |> binary_to_list |> split_into(size) |> Enum.map(list_to_binary(&1))
+  end
+
   def split_into([], _size), do: []
 
   def split_into(list, size) when length(list) >= size do
