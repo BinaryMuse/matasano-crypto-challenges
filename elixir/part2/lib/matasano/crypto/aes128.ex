@@ -1,6 +1,5 @@
 defmodule Matasano.Crypto.AES128 do
   @ecb_iv List.duplicate(0, 16) |> list_to_binary
-  :crypto.start
 
   # Since Erlang does not expose AES-128-ECB to us, we just use
   # CBC mode with a 0-filled IV on each block, one at a time.
