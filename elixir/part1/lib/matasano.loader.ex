@@ -11,7 +11,7 @@ defmodule Matasano.Loader do
   end
 
   defp do_readline(file, acc) do
-    case IO.readline(file) do
+    case IO.read(file, :line) do
       :eof -> Enum.reverse acc
       data -> do_readline file, [ String.strip(data) | acc ]
     end

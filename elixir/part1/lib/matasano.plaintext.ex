@@ -30,7 +30,7 @@ defmodule Matasano.Plaintext do
       -5.0
   """
   def score_english(text) when is_binary(text) do
-    score_english binary_to_list(text)
+    score_english :binary.bin_to_list(text)
   end
 
   def score_english(text) when is_list(text) do

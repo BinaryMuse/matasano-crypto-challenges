@@ -24,14 +24,14 @@ defmodule Matasano.Exercise.Test do
   @ciphertext "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
   test "decrypts a message encrypted by single-character xor" do
-    bytes = @ciphertext |> Bytes.from_hex |> binary_to_list
+    bytes = @ciphertext |> Bytes.from_hex |> :binary.bin_to_list
     len = length(bytes)
-    keys = Enum.map Plaintext.printables, List.duplicate(&1, len)
+    keys = Enum.map Plaintext.printables, &List.duplicate(&1, len)
     scores = Parallel.pmap keys, fn(key) ->
       text = Bytes.xor_sum(key, bytes)
       { Plaintext.score_english(text), key, text }
     end
-    { score, key, text } = Enum.max scores, fn({score, _, _}) -> score end
+    { score, key, text } = Enum.max_by scores, fn({score, _, _}) -> score end
 
     IO.puts "Best scoring key (with a score of #{score} out of 10) is #{key}. Plaintext:"
     IO.puts text

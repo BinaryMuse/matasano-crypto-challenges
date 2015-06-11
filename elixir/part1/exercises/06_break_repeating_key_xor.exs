@@ -61,15 +61,15 @@ defmodule Exercise06 do
       Exercise06.find_key_for_keysize(data, keysize)
     end
 
-    decryptions = Enum.map key_per_keysize, decrypt(data, &1)
+    decryptions = Enum.map key_per_keysize, &decrypt(data, &1)
 
     Enum.find decryptions, fn({_, decrypted}) ->
-      Enum.all? binary_to_list(decrypted), fn(byte) -> Enum.member?(Plaintext.printables, byte) end
+      Enum.all? :binary.bin_to_list(decrypted), fn(byte) -> Enum.member?(Plaintext.printables, byte) end
     end
   end
 
   def decrypt(data, key) do
-    key = list_to_binary(key)
+    key = :binary.list_to_bin(key)
     { key, RepeatingKeyXor.encrypt(data, key) }
   end
 
@@ -85,19 +85,19 @@ defmodule Exercise06 do
   end
 
   def normalized_hamming_distance(bytes, keysize) when is_binary(bytes) do
-    normalized_hamming_distance(binary_to_list(bytes), keysize)
+    normalized_hamming_distance(:binary.bin_to_list(bytes), keysize)
   end
 
   def normalized_hamming_distance(bytes, keysize) when is_list(bytes) do
     [ a, b, c, d | _ ] = Bytes.split_into bytes, keysize
     distances = Enum.map [[a, b], [b, c], [c, d]], fn([x, y]) -> Bytes.hamming_distance(x, y) end
-    Enum.reduce(distances, 0, &1 + &2) / length(distances) / keysize
+    Enum.reduce(distances, 0, &(&1 + &2)) / length(distances) / keysize
   end
 
   # Determines the most likely key for the given ciphertext for the given assumed key size
   def find_key_for_keysize(bytes, keysize) do
-    blocks = bytes |> binary_to_list |> Bytes.split_into(keysize) |> Bytes.transpose
-    Parallel.pmap blocks, find_best_xor_byte(&1)
+    blocks = bytes |> :binary.bin_to_list |> Bytes.split_into(keysize) |> Bytes.transpose
+    Parallel.pmap blocks, &find_best_xor_byte(&1)
   end
 
   # Find the most likely XOR byte for this block based on scores
@@ -108,7 +108,7 @@ defmodule Exercise06 do
       key = List.duplicate(char, length(block))
       { char, Bytes.xor_sum(block, key) |> Plaintext.score_english }
     end
-    { char, _score } = Enum.max scores, fn({_char, score}) -> score end
+    { char, _score } = Enum.max_by scores, fn({_char, score}) -> score end
     char
   end
 end
@@ -124,7 +124,7 @@ defmodule Matasano.Exercise.Test do
 
     # Tests written after the fact; here for regression testing.
     assert key == "Terminator X: Bring the noise"
-    first_line = decrypted |> String.split("\n") |> Enum.first |> String.strip
+    first_line = decrypted |> String.split("\n") |> List.first |> String.strip
     assert first_line == "I'm back and I'm ringin' the bell"
   end
 end

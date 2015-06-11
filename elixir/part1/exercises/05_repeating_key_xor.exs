@@ -29,7 +29,7 @@ defmodule Matasano.Exercise.Test do
     assert ciphertext == @result
 
     IO.puts "Encrypting:"
-    IO.puts "#{binary_to_list @text}"
+    IO.puts "#{:binary.bin_to_list @text}"
     IO.puts "with key #{@key}:"
     IO.puts ciphertext
     IO.puts ""

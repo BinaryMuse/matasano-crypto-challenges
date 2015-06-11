@@ -1,13 +1,23 @@
 Solutions to Part 1 of the Matasano Crypto Challenges.
 
-Run a specific exercise with `./run.sh num`, where `num` is the exercise number. For example,
+Tests
+-----
 
-    ./run.sh 01
+To run the tests:
 
-Run the DocTests with
+    mix test
 
-    ./run.sh tests
+Exercises
+---------
 
-Run the DocTests and all exercises with
+To run a specific exercise:
 
-    ./run.sh all
+    mix matasano.run <n>
+
+where `<n>` is the exercise number, e.g.
+
+    mix matasano.run 1
+
+To run all the exercises at once:
+
+    mix matasano.run all

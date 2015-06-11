@@ -33,7 +33,7 @@ defmodule Matasano.Exercise.Test do
     IO.puts decrypted
 
     # Tests written after the fact; here for regression testing.
-    first_line = decrypted |> String.split("\n") |> Enum.first |> String.strip
+    first_line = decrypted |> String.split("\n") |> List.first |> String.strip
     assert first_line == "I'm back and I'm ringin' the bell"
   end
 end

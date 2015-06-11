@@ -14,18 +14,18 @@ defmodule Exercise04 do
   alias Matasano.Plaintext
 
   def go do
-    strings = Matasano.Loader.lines_from_file("fixtures/04.txt") |> Enum.map(Bytes.from_hex(&1)) |> Enum.map(binary_to_list(&1))
-    scores = Parallel.pmap strings, analyze_string(&1)
-    Enum.max scores, fn({score, _, _}) -> score end
+    strings = Matasano.Loader.lines_from_file("fixtures/04.txt") |> Enum.map(&Bytes.from_hex(&1)) |> Enum.map(&:binary.bin_to_list(&1))
+    scores = Parallel.pmap strings, &analyze_string(&1)
+    Enum.max_by scores, fn({score, _, _}) -> score end
   end
 
   defp analyze_string(string) do
-    keys = Enum.map Plaintext.printables, List.duplicate(&1, length(string))
+    keys = Enum.map Plaintext.printables, &List.duplicate(&1, length(string))
     scores = Parallel.pmap keys, fn(key) ->
       text = Bytes.xor_sum(key, string)
       { Plaintext.score_english(text), key, text }
     end
-    Enum.max scores, fn({score, _, _}) -> score end
+    Enum.max_by scores, fn({score, _, _}) -> score end
   end
 end
 
