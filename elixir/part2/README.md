@@ -1,5 +1,7 @@
 Solutions to Part 2 of the Matasano Crypto Challenges.
 
+Exercises in `exercises/`, supporting code in `lib/`, tests in `test/`.
+
 Tests
 -----
 
