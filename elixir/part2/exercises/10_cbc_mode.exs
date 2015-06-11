@@ -16,11 +16,13 @@
 # to learn from it?
 #
 # The buffer at:
-# 
+#
 #     https://gist.github.com/3132976
 #
 # is intelligible (somewhat) when CBC decrypted against "YELLOW
 # SUBMARINE" with an IV of all ASCII 0 (\x00\x00\x00 &c)
+
+ExUnit.start()
 
 defmodule Part2.Exercise10 do
   use ExUnit.Case
@@ -29,13 +31,13 @@ defmodule Part2.Exercise10 do
   alias Matasano.Plaintext
   alias Matasano.Crypto.AES128
 
-  def run do
+  test "implements CBC mode" do
     data = Matasano.Loader.text_from_file("fixtures/10.txt") |> Bytes.from_base64
-    null_iv = List.duplicate(0, 16) |> list_to_binary
+    null_iv = List.duplicate(0, 16) |> :binary.list_to_bin
 
     # Test decryption visually
     decrypted = AES128.cbc_decrypt(data, "YELLOW SUBMARINE", null_iv)
-    Enum.each binary_to_list(decrypted), fn(byte) ->
+    Enum.each :binary.bin_to_list(decrypted), fn(byte) ->
       if Enum.member? Plaintext.printables, byte do
         IO.write [byte]
       else

@@ -9,12 +9,12 @@ defmodule Matasano.RepeatingKeyXor do
       <<50,11,65,1,28,15,3,65,12,29,5,68,21,5,18,15,15,18,77,21,14,22,65,12,31,13,68,21,5,22,65,2,8,30,27>>
   """
   def encrypt(plaintext, key) do
-    key = repeat_key(key, size plaintext)
+    key = repeat_key(key, String.length(plaintext))
     Matasano.Bytes.xor_sum plaintext, key
   end
 
   defp repeat_key(key, final_length) do
-    key_len       = size key
+    key_len       = String.length(key)
     repeat_amount = div(final_length, key_len) + 1
     List.duplicate(key, repeat_amount) |> Enum.join("") |> String.slice(0, final_length)
   end

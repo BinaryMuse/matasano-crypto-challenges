@@ -1,34 +1,34 @@
 defmodule Matasano.Crypto.AES128 do
-  @ecb_iv List.duplicate(0, 16) |> list_to_binary
+  @ecb_iv List.duplicate(0, 16) |> :binary.list_to_bin
 
   # Since Erlang does not expose AES-128-ECB to us, we just use
   # CBC mode with a 0-filled IV on each block, one at a time.
   def ecb_encrypt(text, key) do
-    parts = binary_to_list(text) |> Matasano.Bytes.split_into(16)
-    parts = Enum.map parts, ecb_encrypt_block(&1, key)
+    parts = :binary.bin_to_list(text) |> Matasano.Bytes.split_into(16)
+    parts = Enum.map parts, &ecb_encrypt_block(&1, key)
     Enum.join parts, ""
   end
 
   def ecb_decrypt(text, key) do
-    parts = binary_to_list(text) |> Matasano.Bytes.split_into(16)
-    parts = Enum.map parts, ecb_decrypt_block(&1, key)
+    parts = :binary.bin_to_list(text) |> Matasano.Bytes.split_into(16)
+    parts = Enum.map parts, &ecb_decrypt_block(&1, key)
     Enum.join parts, ""
   end
 
   def ecb_encrypt_block(part, key) when is_list(part) do
-    :crypto.aes_cbc_128_encrypt(key, @ecb_iv, list_to_binary(part))
+    :crypto.block_encrypt(:aes_cbc128, key, @ecb_iv, :binary.list_to_bin(part))
   end
 
   def ecb_encrypt_block(part, key) do
-    :crypto.aes_cbc_128_encrypt(key, @ecb_iv, part)
+    :crypto.block_encrypt(:aes_cbc128, key, @ecb_iv, part)
   end
 
   def ecb_decrypt_block(part, key) when is_list(part) do
-    :crypto.aes_cbc_128_decrypt(key, @ecb_iv, list_to_binary(part))
+    :crypto.block_decrypt(:aes_cbc128, key, @ecb_iv, :binary.list_to_bin(part))
   end
 
   def ecb_decrypt_block(part, key) do
-    :crypto.aes_cbc_128_decrypt(key, @ecb_iv, part)
+    :crypto.block_decrypt(:aes_cbc128, key, @ecb_iv, part)
   end
 
   # Hand-rolled CBC mode, using our ECB mode above (which is,
@@ -38,7 +38,7 @@ defmodule Matasano.Crypto.AES128 do
     cbc_encrypt_block(iv, parts, key, [])
   end
 
-  def cbc_encrypt_block(_, [], _, acc), do: Enum.reverse(acc) |> list_to_binary
+  def cbc_encrypt_block(_, [], _, acc), do: Enum.reverse(acc) |> :binary.list_to_bin
 
   def cbc_encrypt_block(last_block, [this_block | tail], key, acc) do
     xored_block = Matasano.Bytes.xor_sum(last_block, this_block)
@@ -51,7 +51,7 @@ defmodule Matasano.Crypto.AES128 do
     cbc_decrypt_block(iv, parts, key, [])
   end
 
-  def cbc_decrypt_block(_, [], _, acc), do: Enum.reverse(acc) |> list_to_binary
+  def cbc_decrypt_block(_, [], _, acc), do: Enum.reverse(acc) |> :binary.list_to_bin
 
   def cbc_decrypt_block(last_block, [this_block | tail], key, acc) do
     decrypted = ecb_decrypt_block(this_block, key)

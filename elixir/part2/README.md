@@ -1,4 +1,23 @@
 Solutions to Part 2 of the Matasano Crypto Challenges.
 
-  1. Compile the project and the exercise runner with `mix compile`
-  2. Run a specific exercise with `mix exercise <num>`, where `<num>` is the exercise number
+Tests
+-----
+
+To run the tests:
+
+    mix test
+
+Exercises
+---------
+
+To run a specific exercise:
+
+    mix matasano.run <n>
+
+where `<n>` is the exercise number, e.g.
+
+    mix matasano.run 9
+
+To run all the exercises at once:
+
+    mix matasano.run all

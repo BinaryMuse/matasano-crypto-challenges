@@ -11,10 +11,12 @@
 #
 # The particulars of this algorithm are easy to find online.
 
+ExUnit.start()
+
 defmodule Part2.Exercise9 do
   use ExUnit.Case
 
-  def run do
+  test "implements PKCS#7 padding" do
     bytes = <<1, 2, 3, 4, 5, 6, 7, 8, 9, 10>>
     padded = Matasano.Bytes.pad_to(bytes, 16)
     assert padded == <<1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 6, 6, 6, 6, 6, 6>>
